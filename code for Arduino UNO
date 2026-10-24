@@ -1,0 +1,72 @@
+#define trigPinFront 9   // Front Sensor Trig
+#define echoPinFront 8   // Front Sensor Echo
+#define trigPinBack  7   // Back Sensor Trig (NEW)
+#define echoPinBack  6   // Back Sensor Echo (NEW)
+#define BUZ          13  // Buzzer
+
+long durationFront, distanceFront;
+long durationBack, distanceBack;
+
+void setup() {
+  Serial.begin(9600);
+  
+  pinMode(BUZ, OUTPUT);
+  
+  // Front Sensor Pins
+  pinMode(trigPinFront, OUTPUT);
+  pinMode(echoPinFront, INPUT);
+  
+  // Back Sensor Pins
+  pinMode(trigPinBack, OUTPUT);
+  pinMode(echoPinBack, INPUT);
+}
+
+void loop() {
+  // 1. READ FRONT SENSOR
+  digitalWrite(trigPinFront, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPinFront, HIGH); 
+  delayMicroseconds(10);
+  digitalWrite(trigPinFront, LOW);
+  durationFront = pulseIn(echoPinFront, HIGH); 
+  distanceFront = durationFront / 58.2;
+
+  delay(20); // Small pause between sensor triggers to avoid sound interference
+
+  // 2. READ BACK SENSOR
+  digitalWrite(trigPinBack, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPinBack, HIGH); 
+  delayMicroseconds(10);
+  digitalWrite(trigPinBack, LOW);
+  durationBack = pulseIn(echoPinBack, HIGH); 
+  distanceBack = durationBack / 58.2;
+
+  // Print results to Serial Monitor
+  Serial.print("Front: "); Serial.print(distanceFront); Serial.print("cm | ");
+  Serial.print("Back: "); Serial.println(distanceBack);
+
+  // 3. OBSTACLE LOGIC
+  
+  // Check Front Obstacle (Less than 15 cm)
+  if (distanceFront > 0 && distanceFront < 15) {
+    // Rapid, fast beeping for FRONT danger
+    for (int i = 0; i < 3; i++) {
+      digitalWrite(BUZ, HIGH);
+      delay(40);
+      digitalWrite(BUZ, LOW);
+      delay(40);
+    }
+  }
+  
+  // Check Back Obstacle (Less than 15 cm)
+  else if (distanceBack > 0 && distanceBack < 15) {
+    // Slower, solid beep for BACK danger
+    digitalWrite(BUZ, HIGH);
+    delay(250);
+    digitalWrite(BUZ, LOW);
+    delay(50);
+  }
+  
+  delay(30); // General loop stability delay
+}
