@@ -12,3 +12,4 @@ caregivers.
 The system is designed to be portable, affordable, and easy to use. It can help reduce 
 collisions and improve mobility. Future enhancements may include GPS tracking, voice 
 alerts, and vibration feedback.
+<img width="447" height="447" alt="image" src="https://github.com/user-attachments/assets/d7de6782-4917-4bcb-8045-4999eeb916c6" />
